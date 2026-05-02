@@ -313,11 +313,11 @@
      </div>
      <div class="glass-card p-10">
       <form id="contact-form" action="https://formspree.io/f/mlgzdweq" method="POST">
-       <div><label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Name</label> <input id="name" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="Your name" required>
+       <div><label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Name</label> <input id="name" name="name" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="Your name" required>
        </div>
-       <div><label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label> <input id="email" type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="you@example.com" required>
+       <div><label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label> <input id="email" name="email" type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="you@example.com" required>
        </div>
-       <div><label for="message" class="block text-sm font-semibold text-gray-700 mb-2">Message</label> <textarea id="message" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition resize-none" placeholder="Your message..." required></textarea>
+       <div><label for="message" class="block text-sm font-semibold text-gray-700 mb-2">Message</label> <textarea id="message" name="message" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition resize-none" placeholder="Your message..." required></textarea>
        </div><button type="submit" class="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-lg hover:shadow-xl">Send Message</button>
        <p id="form-success" class="text-center text-green-600 text-sm font-medium hidden">✓ Message sent successfully!</p>
       </form>
@@ -628,11 +628,19 @@
     document.querySelectorAll('.section-reveal').forEach(el => observer.observe(el));
 
     // Contact form
-    document.getElementById('contact-form').addEventListener('submit', (e) => {
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
       const successMsg = document.getElementById('form-success');
-      successMsg.textContent = translations[currentLang].success_message;
-      successMsg.classList.remove('hidden');
-      setTimeout(() => successMsg.classList.add('hidden'), 3000);
+      const form = this;
+      
+      // Let the form submit to Formspree naturally, but show success message after
+      setTimeout(() => {
+        successMsg.textContent = translations[currentLang].success_message;
+        successMsg.classList.remove('hidden');
+        setTimeout(() => {
+          successMsg.classList.add('hidden');
+          form.reset();
+        }, 3000);
+      }, 500);
     });
 
     lucide.createIcons();
