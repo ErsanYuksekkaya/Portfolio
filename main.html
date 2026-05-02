@@ -629,18 +629,41 @@
 
     // Contact form
     document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
       const successMsg = document.getElementById('form-success');
       const form = this;
       
-      // Let the form submit to Formspree naturally, but show success message after
-      setTimeout(() => {
-        successMsg.textContent = translations[currentLang].success_message;
-        successMsg.classList.remove('hidden');
-        setTimeout(() => {
-          successMsg.classList.add('hidden');
-          form.reset();
-        }, 3000);
-      }, 500);
+      // Get form data
+      const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value
+      };
+
+      // Send as JSON to Formspree
+      fetch('https://formspree.io/f/mlgzdweq', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => {
+        if (response.ok) {
+          successMsg.textContent = translations[currentLang].success_message;
+          successMsg.classList.remove('hidden');
+          setTimeout(() => {
+            successMsg.classList.add('hidden');
+            form.reset();
+          }, 3000);
+        } else {
+          alert('Error sending message. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error sending message. Please try again.');
+      });
     });
 
     lucide.createIcons();
